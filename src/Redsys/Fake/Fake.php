@@ -114,6 +114,17 @@ class Fake
             return $this->realizarPagoResponse();
         }
 
+        //CHECK DIRECT PAYMENT
+        if (isset($_POST['Ds_MerchantParameters'])) {
+            $values_json = base64_decode($_POST['Ds_MerchantParameters']);
+            $values = json_decode($values_json, true);
+
+            if (isset($values['Ds_Merchant_DirectPayment']) && $values['Ds_Merchant_DirectPayment'] == true) {
+                $_POST['action'] = 'success';
+                return $this->realizarPagoResponse();
+            }
+        }
+
         if ($this->checkSignature($_POST) === true) {
             $this->success = 'Valid signature';
         } else {
